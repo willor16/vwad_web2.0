@@ -1,100 +1,129 @@
 /* Description: Custom JS file */
 
 
-/* For Back To Top Button */
-window.onscroll = function () {
-	scrollFunctionBTT(); // back to top button
-};
+(function($) {
+    "use strict"; 
+	
+    /* Navbar Scripts */
+    // jQuery to collapse the navbar on scroll
+    $(window).on('scroll load', function() {
+		if ($(".navbar").offset().top > 60) {
+			$(".fixed-top").addClass("top-nav-collapse");
+		} else {
+			$(".fixed-top").removeClass("top-nav-collapse");
+		}
+    });
+    
+	// jQuery for page scrolling feature - requires jQuery Easing plugin
+	$(function() {
+		$(document).on('click', 'a.page-scroll', function(event) {
+			var $anchor = $(this);
+			$('html, body').stop().animate({
+				scrollTop: $($anchor.attr('href')).offset().top
+			}, 600, 'easeInOutExpo');
+			event.preventDefault();
+		});
+    });
+
+    // offcanvas script from Bootstrap + added element to close menu on click in small viewport
+    $('[data-toggle="offcanvas"], .navbar-nav li a:not(.dropdown-toggle').on('click', function () {
+        $('.offcanvas-collapse').toggleClass('open')
+    })
+
+    // hover in desktop mode
+    function toggleDropdown (e) {
+        const _d = $(e.target).closest('.dropdown'),
+            _m = $('.dropdown-menu', _d);
+        setTimeout(function(){
+            const shouldOpen = e.type !== 'click' && _d.is(':hover');
+            _m.toggleClass('show', shouldOpen);
+            _d.toggleClass('show', shouldOpen);
+            $('[data-toggle="dropdown"]', _d).attr('aria-expanded', shouldOpen);
+        }, e.type === 'mouseleave' ? 300 : 0);
+    }
+    $('body')
+    .on('mouseenter mouseleave','.dropdown',toggleDropdown)
+    .on('click', '.dropdown-menu a', toggleDropdown);
 
 
-/* Image Slider 1 - Swiper */
-var imageSlider = new Swiper('.image-slider-1', {
-	autoplay: {
-		delay: 4000,
-		disableOnInteraction: false
-	},
-	loop: true,
-	spaceBetween: 60,
-	slidesPerView: 5,
-	breakpoints: {
-		// when window is <= 575px
-		575: {
-			slidesPerView: 1,
-			spaceBetween: 10
+    /* Details Lightbox - Magnific Popup */
+    $('.popup-with-move-anim').magnificPopup({
+		type: 'inline',
+		fixedContentPos: true,
+		fixedBgPos: true,
+		overflowY: 'auto',
+		closeBtnInside: true,
+		preloader: false,
+		midClick: true,
+		removalDelay: 300,
+		mainClass: 'my-mfp-slide-bottom'
+    });
+    
+
+    /* Text Slider - Swiper */
+	var textSlider = new Swiper('.text-slider', {
+        autoplay: {
+            delay: 19000,
+            disableOnInteraction: false
 		},
-		// when window is <= 767px
-		767: {
-			slidesPerView: 2,
-			spaceBetween: 40
-		},
-		// when window is <= 991px
-		991: {
-			slidesPerView: 3,
-			spaceBetween: 50
-		},
-		// when window is <= 1199px
-		1199: {
-			slidesPerView: 4,
-			spaceBetween: 60
-		},
-	}
+        loop: true,
+        navigation: {
+			nextEl: '.swiper-button-next',
+			prevEl: '.swiper-button-prev'
+		}
+    });
+
+    
+    /* Move Form Fields Label When User Types */
+    // for input and textarea fields
+    $("input, textarea").keyup(function(){
+		if ($(this).val() != '') {
+			$(this).addClass('notEmpty');
+		} else {
+			$(this).removeClass('notEmpty');
+		}
+	});
+	
+
+    /* Back To Top Button */
+    // create the back to top button
+    $('body').prepend('<a href="body" class="back-to-top page-scroll">Back to Top</a>');
+    var amountScrolled = 700;
+    $(window).scroll(function() {
+        if ($(window).scrollTop() > amountScrolled) {
+            $('a.back-to-top').fadeIn('500');
+        } else {
+            $('a.back-to-top').fadeOut('500');
+        }
+    });
+
+
+	/* Removes Long Focus On Buttons */
+	$(".button, a, button").mouseup(function() {
+		$(this).blur();
+	});
+
+})(jQuery);
+
+
+//form send email to v-wad company
+const btn = document.getElementById('form-control-submit-button');
+
+document.getElementById('contactForm')
+    .addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    btn.value = 'Sending...';
+
+    const serviceID = "default_service";
+    const templateID = "template_8dnqt09";
+
+    emailjs.sendForm(serviceID, templateID, this)
+        .then(() => {
+        btn.value = 'Send Email';
+        alert('Enviado con exito!');
+        }, (err) => {
+        btn.value = 'Send Email';
+        alert(JSON.stringify(err));
+        });
 });
-
-
-/* Image Slider 2 - Swiper */
-var imageSlider2 = new Swiper('.image-slider-2', {
-	autoplay: {
-		delay: 3000,
-		disableOnInteraction: false
-	},
-	loop: true,
-	navigation: {
-		nextEl: '.swiper-button-next',
-		prevEl: '.swiper-button-prev',
-	}
-});
-
-
-/* Video Modal */
-var videoBtn = document.querySelector('.video-btn')
-var videoModal = document.getElementById('videoModal')
-var video = document.getElementById('video')
-var videoSrc
-
-var checkVideoSrc = document.querySelector('.video-btn');
-if (checkVideoSrc !== null) { 
-	videoBtn.addEventListener('click',function(e){
-		videoSrc = videoBtn.getAttribute('data-bs-src')
-	})
-}
-
-var checkVideoModal = document.getElementById('videoModal');
-if (checkVideoModal !== null) { 
-	videoModal.addEventListener('shown.bs.modal',(e)=>{
-		video.setAttribute('src', videoSrc + '?autoplay=1&amp;modestbranding=1&amp;showinfo=0')
-	})
-
-	videoModal.addEventListener('hide.bs.modal',(e)=>{
-		video.setAttribute('src', videoSrc)
-	})
-}
-
-
-/* Back To Top Button */
-// Get the button
-myButton = document.getElementById("myBtn");
-
-// When the user scrolls down 20px from the top of the document, show the button
-function scrollFunctionBTT() {
-	if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-		myButton.style.display = "block";
-	} else {
-		myButton.style.display = "none";
-	}
-}
-
-// When the user clicks on the button, scroll to the top of the document
-function topFunction() {
-	document.body.scrollTop = 0; // for Safari
-	document.documentElement.scrollTop = 0; // for Chrome, Firefox, IE and Opera
-}
