@@ -72,6 +72,7 @@
 			prevEl: '.swiper-button-prev'
 		}
     });
+
     
     /* Move Form Fields Label When User Types */
     // for input and textarea fields
@@ -126,32 +127,3 @@ document.getElementById('contactForm')
         alert(JSON.stringify(err));
         });
 });
-
-/* Video Modal */
-var videoBtn = document.querySelector('.video-btn');
-var videoModal = document.getElementById('videoModal');
-var video = document.getElementById('video');
-
-if (videoBtn !== null && videoModal !== null) {
-  videoBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    var videoSrc = videoBtn.getAttribute('data-bs-src');
-    video.src = videoSrc + '?autoplay=1&modestbranding=1&showinfo=0';
-    videoModal.classList.add('show'); // Agregar clase 'show' para mostrar el modal
-    videoModal.style.display = 'block'; // Mostrar el modal    
-    video.classList.add('custom-video'); // Ajustar el ancho del video
-    
-    // Cerrar el video al hacer clic fuera del cuadro de reproducción
-    videoModal.addEventListener('click', function (e) {
-      if (e.target === videoModal) {
-        videoModal.classList.remove('show'); // Remover clase 'show' para ocultar el modal
-        videoModal.style.display = 'none'; // Ocultar el modal
-        video.src = ''; // Detener la reproducción del video
-      }
-    });
-  });
-
-  videoModal.addEventListener('hidden.bs.modal', function (e) {
-    video.src = '';
-  });
-}
